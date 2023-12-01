@@ -1,0 +1,58 @@
+import kotlinx.coroutines.*
+
+suspend fun foo(): Result<String> =
+    runCatching {
+//         print("a")
+        delay(10)
+        ""
+    }
+
+suspend fun bar(str_to_print: String) {
+    val result = foo().getOrDefault(str_to_print)
+    print(result)
+}
+
+suspend fun bar_2(str_to_print: String) {
+    val result = foo().getOrDefault(str_to_print)
+    print(result)
+}
+
+fun main() = runBlocking {
+    val job = launch {
+        val list = listOf("One\n", "Two\n", "Three\n")
+        for (item in list) {
+			bar_2(item)
+        }        
+    }
+    
+    val job2 = launch {
+        val list = listOf("a\n", "1\n", "4\n")
+        for (item in list) {
+			bar_2(item)
+        }        
+    }
+
+    delay(10)
+	
+
+    job2.cancel()
+    job.cancel()
+	job.join()
+    job2.join()
+
+
+}
+
+
+// fun main() {
+//     val list = listOf('a', '1', '4')
+//     println(list)
+
+//     showMessage(list)
+// }
+
+// fun showMessage(list: List<Char>) {
+//     for (item in list) {
+//         print(item)
+//     }
+// }
